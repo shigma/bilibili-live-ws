@@ -1,33 +1,18 @@
 import { inflates } from './inflate/node'
-import { LiveWSBase, WSOptions } from './ws'
-import { LiveTCPBase, TCPOptions } from './tcp'
+import { LiveWSBase, OpenLiveWebSocketInfo, WSOptions } from './ws'
 import { KeepLive } from './common'
 
-export { getConf, getRoomid } from './extra'
-export { TCPOptions, WSOptions }
+export { OpenLiveWebSocketInfo, WSOptions }
 export { LiveOptions, relayEvent } from './common'
 
 export class LiveWS extends LiveWSBase {
-  constructor(roomid: number, opts?: WSOptions) {
-    super(inflates, roomid, opts)
-  }
-}
-
-export class LiveTCP extends LiveTCPBase {
-  constructor(roomid: number, opts?: TCPOptions) {
-    super(inflates, roomid, opts)
+  constructor(websocketInfo: OpenLiveWebSocketInfo, opts?: WSOptions) {
+    super(inflates, websocketInfo, opts)
   }
 }
 
 export class KeepLiveWS extends KeepLive<typeof LiveWSBase> {
-  constructor(roomid: number, opts?: WSOptions) {
-    super(LiveWSBase, inflates, roomid, opts)
-  }
-}
-
-
-export class KeepLiveTCP extends KeepLive<typeof LiveTCPBase> {
-  constructor(roomid: number, opts?: TCPOptions) {
-    super(LiveTCPBase, inflates, roomid, opts)
+  constructor(websocketInfo: OpenLiveWebSocketInfo, opts?: WSOptions) {
+    super(LiveWSBase, inflates, websocketInfo, opts)
   }
 }

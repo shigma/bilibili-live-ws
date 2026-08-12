@@ -1,13 +1,13 @@
 {
   "name": "bilibili-live-ws",
-  "version": "6.3.1",
-  "description": "Bilibili Live WebSocket/TCP API",
+  "version": "7.0.0",
+  "description": "Bilibili Live Open Platform WebSocket client",
   "type": "commonjs",
   "main": "index.js",
   "browser": "browser.js",
   "scripts": {
-    "test": "npm run clear; npm run unit",
-    "unit": "nyc mocha --reporter=landing -r ts-node/register test/test.ts",
+    "test": "npm run build && npm run unit",
+    "unit": "nyc mocha --reporter=landing test/test.cjs",
     "clear": "rm index.js index.d.ts browser.js browser.d.ts src/*.js src/*.d.ts;exit 0",
     "tsc": "tsc -b",
     "build": "npm run clear && npm run tsc"
@@ -22,7 +22,7 @@
     "websocket",
     "live",
     "ws",
-    "tcp"
+    "open-platform"
   ],
   "author": "simon3000 <simon3000@163.com>",
   "license": "MIT",

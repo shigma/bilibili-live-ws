@@ -3,8 +3,6 @@ import 'array-flat-polyfill'
 export type { Buffer } from 'buffer'
 export type Inflates = { inflateAsync: (b: Buffer) => Buffer | Promise<Buffer>, brotliDecompressAsync: (b: Buffer) => Buffer | Promise<Buffer>, Buffer: typeof Buffer }
 
-// https://github.com/lovelyyoshino/Bilibili-Live-API/blob/master/API.WebSocket.md
-
 const cutBuffer = (buffer: Buffer) => {
   const bufferPacks: Buffer[] = []
   let size: number

@@ -2,7 +2,7 @@ import { EventEmitter } from 'events'
 
 import { encoder, makeDecoder, Inflates } from './buffer'
 
-export type LiveOptions = { protover?: 1 | 2 | 3, key?: string, authBody?: any, uid?: number, buvid?: string }
+export type LiveOptions = Record<never, never>
 
 export const relayEvent = Symbol('relay')
 
@@ -15,7 +15,6 @@ class NiceEventEmitter extends EventEmitter {
 }
 
 export class Live extends NiceEventEmitter {
-  roomid: number
   online: number
   live: boolean
   closed: boolean
@@ -26,14 +25,9 @@ export class Live extends NiceEventEmitter {
   send: (data: Buffer) => void
   close: () => void
 
-  constructor(inflates: Inflates, roomid: number, { send, close, protover = 3, key, authBody, uid = 0, buvid }: { send: (data: Buffer) => void, close: () => void } & LiveOptions) {
-    if (typeof roomid !== 'number' || Number.isNaN(roomid)) {
-      throw new Error(`roomid ${roomid} must be Number not NaN`)
-    }
-
+  constructor(inflates: Inflates, { send, close, authBody }: { send: (data: Buffer) => void, close: () => void, authBody: string }) {
     super()
     this.inflates = inflates
-    this.roomid = roomid
     this.online = 0
     this.live = false
     this.closed = false
@@ -74,22 +68,7 @@ export class Live extends NiceEventEmitter {
     })
 
     this.on('open', () => {
-      if (authBody) {
-        if (typeof authBody === 'object') {
-          authBody = encoder('join', inflates, authBody)
-        }
-        this.send(authBody)
-      } else {
-        const hi: { uid: number, roomid: number, protover: number, platform: string, type: number, key?: string, buvid?: string } = { uid: uid, roomid, protover, platform: 'web', type: 2 }
-        if (key) {
-          hi.key = key
-        }
-        if (buvid) {
-          hi.buvid = buvid
-        }
-        const buf = encoder('join', inflates, hi)
-        this.send(buf)
-      }
+      this.send(encoder('join', inflates, authBody))
     })
 
     this.on('close', () => {
@@ -113,7 +92,7 @@ export class Live extends NiceEventEmitter {
 }
 
 
-export class KeepLive<Base extends typeof Live> extends EventEmitter {
+export class KeepLive<Base extends new (...args: any[]) => Live> extends EventEmitter {
   params: ConstructorParameters<Base>
   closed: boolean
   interval: number
@@ -172,10 +151,6 @@ export class KeepLive<Base extends typeof Live> extends EventEmitter {
 
   get online() {
     return this.connection.online
-  }
-
-  get roomid() {
-    return this.connection.roomid
   }
 
   close() {
